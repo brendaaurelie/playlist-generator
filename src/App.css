@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  
 }
 
 .App-logo {
@@ -35,4 +36,15 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.SpotifyButton{
+ margin-top: 2%;
+}
+
+.MuiButton-contained  {
+/* font-family: 'Roboto', sans-serif !important; */
+font-weight: 900 !important;
+/* border-radius: 7% !important; */
+/* font-size: 10px !important; */
 }
