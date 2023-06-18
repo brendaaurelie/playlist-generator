@@ -29,7 +29,7 @@ const PlaylistForm = () => {
         'angry',
         'worry',
       ];
-      const ITEM_HEIGHT = 48;
+  const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
     PaperProps: {
@@ -41,6 +41,7 @@ const PlaylistForm = () => {
   };
 
       const [tagName, setTagName] = useState([]);
+      const [title, setTitle] = useState("");
 
       useEffect(() => {
         localStorage.setItem("tags", tagName)
@@ -82,6 +83,8 @@ const PlaylistForm = () => {
        required
        id="outlined-required"
        label="Title"
+       value={title}
+       onChange={(e) => setTitle(e.target.value)}
         />
 
         <h3>2. What's the vibe?</h3>
