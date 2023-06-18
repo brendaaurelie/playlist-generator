@@ -14,6 +14,7 @@ import { Stack } from "@mui/system";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import "../App.css"
 
 const PlaylistForm = () => {
     const tags = [
@@ -74,7 +75,9 @@ const PlaylistForm = () => {
         <Stack>
         <h1>We love making playlist easy.</h1>
 
-        <h3>1. What is your playlist title?</h3>
+        <hr></hr>
+
+        <h3>1. What's the title?</h3>
        <TextField
        required
        id="outlined-required"
@@ -119,7 +122,7 @@ const PlaylistForm = () => {
         </FormControl>
         </div>
 
-        <h3>3. Click and we're done! </h3>
+        <h3>3. Done </h3>
         <Button 
         onClick={handleOpen} 
         endIcon=

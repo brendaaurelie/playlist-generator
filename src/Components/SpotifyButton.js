@@ -2,11 +2,11 @@ import React from "react";
 import Button from '@mui/material/Button';
 import { Avatar } from "@mui/material";
 import "../App.css"
-const SpotifyButton = () => {
-   
+const SpotifyButton = ({link}) => {
+   console.log(link)
     return (
         <div className="but">
-        <Button variant="contained" 
+        <Button href={link} variant="contained" 
         endIcon=
             {<Avatar src={'/Spotify_Icon_RGB_Black.png'} />}
             sx={{

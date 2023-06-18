@@ -48,3 +48,7 @@ font-weight: 900 !important;
 /* border-radius: 7% !important; */
 /* font-size: 10px !important; */
 }
+
+hr.solid {
+  border-top: 3px solid rgb(181, 8, 8) !important;;
+}
