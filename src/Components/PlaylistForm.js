@@ -16,7 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import "../App.css"
 
-const PlaylistForm = () => {
+const PlaylistForm = ({loggedIn}) => {
     const tags = [
         'summer',
         'love',
@@ -80,6 +80,7 @@ const PlaylistForm = () => {
 
         <h3>1. What's the title?</h3>
        <TextField
+       disabled={!loggedIn}
        required
        id="outlined-required"
        label="Title"
@@ -93,6 +94,7 @@ const PlaylistForm = () => {
         <FormControl className='form' sx={{ m: 1, width: 300 }}>
           <InputLabel id="demo-multiple-chip-label">Tags</InputLabel>
           <Select
+           disabled={!loggedIn}
             labelId="demo-multiple-chip-label"
             id="demo-multiple-chip"
             multiple
@@ -127,6 +129,7 @@ const PlaylistForm = () => {
 
         <h3>3. Done </h3>
         <Button 
+        disabled={!loggedIn}
         onClick={handleOpen} 
         endIcon=
         {<PlaylistAddIcon/>}

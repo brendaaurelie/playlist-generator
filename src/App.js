@@ -14,6 +14,7 @@ function App() {
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const RESPONSE_TYPE = "token"
   const [token, setToken] = useState("")
+  const [status, setStatus] = useState(false)
 
   useEffect(() => {
       const hash = window.location.hash
@@ -27,11 +28,13 @@ function App() {
       }
 
       setToken(token)
+      setStatus(true)
 
   }, [])
 
   const logout = () => {
     setToken("")
+    setStatus(false)
     window.localStorage.removeItem("token")
     }
 
@@ -50,7 +53,7 @@ function App() {
       }
       </div>
 
-      <PlaylistForm/>
+      <PlaylistForm loggedIn={status}/>
       </Stack>
       
     </div>
