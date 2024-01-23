@@ -46,6 +46,7 @@ const PlaylistForm = ({loggedIn}) => {
       useEffect(() => {
         localStorage.setItem("tags", tagName)
       },[tagName]);
+
       const handleChange = (event) => {
         const {
           target: { value },
@@ -64,6 +65,10 @@ const PlaylistForm = ({loggedIn}) => {
       const handleOpen = () => {
         setOpen(true);
       };
+
+      useEffect(()=>{
+        localStorage.setItem("title",title);
+      },[title]);
   
     return (
         <Paper elevation={3} sx={{ 

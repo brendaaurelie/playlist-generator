@@ -25,17 +25,17 @@ function App() {
 
           window.location.hash = ""
           window.localStorage.setItem("token", token)
+          setStatus(true);
       }
 
       setToken(token)
-      setStatus(true)
-
   }, [])
 
   const logout = () => {
     setToken("")
     setStatus(false)
     window.localStorage.removeItem("token")
+    window.localStorage.removeItem("loggedIn")
     }
 
   return (
