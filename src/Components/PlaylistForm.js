@@ -14,6 +14,7 @@ import { Stack } from "@mui/system";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import axios from "axios";
 import "../App.css"
 
 const PlaylistForm = ({loggedIn}) => {
@@ -29,6 +30,8 @@ const PlaylistForm = ({loggedIn}) => {
         'angry',
         'worry',
       ];
+  const user_id = window.localStorage.getItem("user_id");
+  const access_token = window.localStorage.getItem("token");
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -60,7 +63,26 @@ const PlaylistForm = ({loggedIn}) => {
 
       const [open, setOpen] = React.useState(false);
       const handleClose = () => {
+        console.log("here");
         setOpen(false);
+    
+        console.log("POSTING TO " + user_id);
+        axios.post(`https://api.spotify.com/v1/users/${user_id}/playlists`,{
+          name: title,
+          description: "testing from spotify api",
+          public: true
+        }, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(res => {
+        console.log("PLAYIST ID: " + res.data.id);
+      }).catch((e) => {
+        console.log("ERR" + e);
+      })
+
       };
       const handleOpen = () => {
         setOpen(true);
@@ -153,7 +175,7 @@ const PlaylistForm = ({loggedIn}) => {
         open={open}
         onClick={handleClose}
         >
-        <CircularProgress color="inherit" />
+        {/* <CircularProgress color="inherit" /> */}
         </Backdrop>
      </Paper>
       
