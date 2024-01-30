@@ -45,6 +45,7 @@ const PlaylistForm = ({loggedIn}) => {
 
       const [tagName, setTagName] = useState([]);
       const [title, setTitle] = useState("");
+      const [playlistId, setPlaylistId] = useState("");
 
       useEffect(() => {
         localStorage.setItem("tags", tagName)
@@ -79,11 +80,14 @@ const PlaylistForm = ({loggedIn}) => {
         }
       ).then(res => {
         console.log("PLAYIST ID: " + res.data.id);
+        setPlaylistId(res.data.id);
+        addSongToPlaylist(res.data.id);
       }).catch((e) => {
         console.log("ERR" + e);
       })
 
       };
+
       const handleOpen = () => {
         setOpen(true);
       };
@@ -91,6 +95,25 @@ const PlaylistForm = ({loggedIn}) => {
       useEffect(()=>{
         localStorage.setItem("title",title);
       },[title]);
+
+      const addSongToPlaylist = (playlistId) => {
+
+        axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
+          uris: ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh", "spotify:track:1301WleyT98MSxVHPZCA6M"
+        ],
+        }, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(res => {
+        console.log("snapshot ID: " + res.data.id);
+      }).catch((e) => {
+        console.log("ERR" + e);
+      })
+
+      };
   
     return (
         <Paper elevation={3} sx={{ 
