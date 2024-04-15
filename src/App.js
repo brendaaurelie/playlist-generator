@@ -9,6 +9,7 @@ import LogoutButton from './Components/LogoutButton';
 import { Logout } from '@mui/icons-material';
 import axios from 'axios';
 
+
 function getUserId(access_token) {
   axios.get('https://api.spotify.com/v1/me',{
     headers: {
@@ -84,6 +85,8 @@ function App() {
       </div>
 
       <PlaylistForm loggedIn={status}/>
+
+      
       </Stack>
       
     </div>
