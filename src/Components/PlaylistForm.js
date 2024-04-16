@@ -45,6 +45,7 @@ const PlaylistForm = ({loggedIn}) => {
   };
 
       const [tagName, setTagName] = useState([]);
+      const [songURIS, setSongURIS] = useState([]);
       const [title, setTitle] = useState("");
       const [playlistId, setPlaylistId] = useState("");
       const [playlistGenerated, setPlaylistGenerated] = useState(false);
@@ -52,6 +53,17 @@ const PlaylistForm = ({loggedIn}) => {
       useEffect(() => {
         localStorage.setItem("tags", tagName)
       },[tagName]);
+
+      //populate song uris
+      useEffect(() => {
+        setSongURIS(["spotify:track:1tDWVeCR9oWGX8d5J9rswk",
+                     "spotify:track:42et6fnHCw1HIPSrdPprMl",
+                     "spotify:track:19kHhX6f6EfLU7rcO3RqjO",
+                     "spotify:track:0eDQj41kzBhMKQIkTt6OJR",
+                     "spotify:track:7DzktdAh3zTT5Li8vam9tt",
+                     "spotify:track:2m1hi0nfMR9vdGC8UcrnwU",
+      ])
+      },[]);
 
       const handleChange = (event) => {
         const {
@@ -105,8 +117,7 @@ const PlaylistForm = ({loggedIn}) => {
       const addSongToPlaylist = (playlistId) => {
 
         axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
-          uris: ["spotify:track:1tDWVeCR9oWGX8d5J9rswk", "spotify:track:42et6fnHCw1HIPSrdPprMl"
-        ],
+          uris: songURIS,
         }, {
           headers: {
             Authorization: `Bearer ${access_token}`,
@@ -122,16 +133,20 @@ const PlaylistForm = ({loggedIn}) => {
       };
   
     return (
-        <>
+        <Stack
+        direction="column"
+        justifyContent="center"
+        alignItems="center" 
+        spacing={4}>
        
         <Paper elevation={3} sx={{
         borderRadius: "8px",
-        padding: "3% 8%",
+        padding: "3% 22%",
         backgroundColor: "#fcefe1",
         paddingBottom: "6%"
       }}>
 
-        <Stack>
+        <Stack width={450}>
           <h1>We love making playlist easy.</h1>
 
           <hr></hr>
@@ -209,10 +224,10 @@ const PlaylistForm = ({loggedIn}) => {
       </Paper>
       
       {/* Show the content of the playlists */}
-       <div className="songPreview">
-        {playlistGenerated && <SongsPreview/>}
-        </div>     
-      </>
+      
+        {playlistGenerated && <SongsPreview songLists={songURIS}/>}
+       
+      </Stack>
       
     );
 
