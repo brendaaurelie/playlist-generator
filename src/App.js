@@ -30,13 +30,14 @@ function getUserId(access_token) {
 
 function App() {
   
-  const CLIENT_ID = process.env.REACT_APP_CLIENTID
+  const CLIENT_ID = "f1d5ed8ede8e41dfaf0c07f2f67449a9"
   const REDIRECT_URI = "http://localhost:3000/brendaaurelie/playlist-generator/"
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
   const SCOPE = "playlist-modify-public playlist-modify-private"
   const RESPONSE_TYPE = "token"
   const [token, setToken] = useState("")
   const [status, setStatus] = useState(false)
+  
 
   useEffect(() => {
     
