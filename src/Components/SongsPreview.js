@@ -8,75 +8,76 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import axios from "axios";
+import { useState, useEffect } from 'react';
 
 
-const SongsPreview = () => {
-    return(
+const SongsPreview = ({songLists}) => {
+    const [trackInfo, setTrackInfo]= useState([]);
+    const access_token = window.localStorage.getItem("token");
     
+    useEffect(() => {
+        songLists.map((songList) => {
+            const track_id = songList.substring(14);
+            console.log(track_id);
+            const api_url = `https://api.spotify.com/v1/tracks/${track_id}`;
+        
+            axios.get(api_url, {
+                headers: {
+                  Authorization: `Bearer ${access_token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            ).then(res => {
+                const track = {}
+                track['title'] = res.data.name;
+                track['artist'] = res.data.artists[0].name;
+                
+                console.log(JSON.stringify(track));
+                setTrackInfo(trackInfo => [...trackInfo,track]);
+                // console.log(trackInfo);
+              
+            }).catch((e) => {
+              console.log("ERR" + e);
+            })
+        })
+      },[]);
+
+
+    return(
         <Paper elevation={3} sx={{
             borderRadius: "8px",
-            padding: "3% 8%",
+            padding: "6% 10%",
             backgroundColor: "#fcefe1",
-            paddingBottom: "6%"
+            paddingBottom: "6%",
+            width: "100%"
           }}>
         <Stack spacing={2}>
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary="Brunch this weekend?"
-                        secondary={<React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                Ali Connors
-                            </Typography>
-                            {" — I'll be in your neighborhood doing errands this…"}
-                        </React.Fragment>} />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary="Summer BBQ"
-                        secondary={<React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                to Scott, Alex, Jennifer
-                            </Typography>
-                            {" — Wish I could come, but I'm out of town this…"}
-                        </React.Fragment>} />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                        <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary="Oui Oui"
-                        secondary={<React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                Sandra Adams
-                            </Typography>
-                            {' — Do you have Paris recommendations? Have you ever…'}
-                        </React.Fragment>} />
-                </ListItem>
+            <List sx={{ width: "100%", maxWidth: 560, bgcolor: 'background.paper' }}>
+                {trackInfo.map((songList) => (
+                    <><ListItem alignItems="flex-start">
+                        <ListItemAvatar>
+                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={songList.title}
+                            secondary={<React.Fragment>
+                                <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="body2"
+                                    color="text.primary"
+                                >
+                                   {songList.artist}
+                                </Typography>
+                                
+                            </React.Fragment>} />
+                    </ListItem><Divider variant="inset" component="li" /></>
+                ))
+                }
+                
+                
+               
             </List>
         </Stack>
         </Paper>
