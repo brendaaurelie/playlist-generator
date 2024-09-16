@@ -7,8 +7,9 @@ import { useState, useEffect } from 'react';
 import { Button } from '@mui/base';
 import LogoutButton from './Components/LogoutButton';
 import { Logout } from '@mui/icons-material';
+import AIBUtton from './Components/AIButton';
 import axios from 'axios';
-
+import { getOpenAIResponse } from './openaiService';
 
 function getUserId(access_token) {
   axios.get('https://api.spotify.com/v1/me',{
@@ -36,8 +37,7 @@ function App() {
   const SCOPE = "playlist-modify-public playlist-modify-private"
   const RESPONSE_TYPE = "token"
   const [token, setToken] = useState("")
-  const [status, setStatus] = useState(false)
-  
+  const [status, setStatus] = useState(false)  
 
   useEffect(() => {
     
@@ -62,14 +62,6 @@ function App() {
    }
   }, [token])
 
-  const logout = () => {
-    setToken("")
-    setStatus(false)
-    window.localStorage.removeItem("token")
-    window.localStorage.removeItem("loggedIn")
-    window.localStorage.removeItem("user_id")
-  }
-
   return (
     <div className='landing'>
       <Stack 
@@ -77,11 +69,11 @@ function App() {
       justifyContent="center"
       alignItems="center" 
       spacing={4}>
-
+      <AIBUtton onpress={[console.log("HEREEEEE"), console.log("RESPONSE FROM OPENAI:", "PLEASE")]}/>
       <div className='SpotifyButton'>
       {!token ?
       <SpotifyButton link={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}/>
-          : <LogoutButton onPress={logout}/>
+          : <LogoutButton onPress={[setToken(""), setStatus(false), window.localStorage.removeItem("token"), window.localStorage.removeItem("loggedIn"), window.localStorage.removeItem("user_id")]}/>
       }
       </div>
 
