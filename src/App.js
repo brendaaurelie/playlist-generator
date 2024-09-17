@@ -78,7 +78,7 @@ function App() {
       <div className='SpotifyButton'>
       {!token ?
       <SpotifyButton link={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}/>
-          : <LogoutButton onPress={[setToken(""), setStatus(false), window.localStorage.removeItem("token"), window.localStorage.removeItem("loggedIn"), window.localStorage.removeItem("user_id")]}/>
+          : <LogoutButton onPress={logout}/>
       }
       </div>
 
