@@ -21,7 +21,6 @@ const SongsPreview = ({songLists}) => {
             const track_id = songList.substring(14);
             console.log(track_id);
             const api_url = `https://api.spotify.com/v1/tracks/${track_id}`;
-        
             axios.get(api_url, {
                 headers: {
                   Authorization: `Bearer ${access_token}`,
@@ -32,10 +31,8 @@ const SongsPreview = ({songLists}) => {
                 const track = {}
                 track['title'] = res.data.name;
                 track['artist'] = res.data.artists[0].name;
-                
                 console.log(JSON.stringify(track));
                 setTrackInfo(trackInfo => [...trackInfo,track]);
-                // console.log(trackInfo);
               
             }).catch((e) => {
               console.log("ERR" + e);
