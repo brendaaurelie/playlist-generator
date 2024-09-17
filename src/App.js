@@ -69,7 +69,7 @@ function App() {
       justifyContent="center"
       alignItems="center" 
       spacing={4}>
-      <AIBUtton onpress={[console.log("HEREEEEE"), console.log("RESPONSE FROM OPENAI:", "PLEASE")]}/>
+      <AIBUtton onpress={[getOpenAIResponse("Can you generate an image of happiness for me?")]}/>
       <div className='SpotifyButton'>
       {!token ?
       <SpotifyButton link={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`}/>
