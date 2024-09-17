@@ -20,4 +20,3 @@ export const getOpenAIResponse = async (prompt) => {
     });
     return response.data;
 };
-

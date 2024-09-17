@@ -37,9 +37,9 @@ const PlaylistForm = ({loggedIn}) => {
   const [playlistId, setPlaylistId] = useState("");
   const [playlistGenerated, setPlaylistGenerated] = useState(false);
   const [tags, setTags] = useState([]);
-  const [userId,setUserId] = useState("");
-  const [accessToken,setAccessToken] = useState("");
 
+  const userId = window.localStorage.getItem("user_id");
+  const accessToken = window.localStorage.getItem("token");
 
 const populateTags = () => {
   const tags = [
@@ -67,16 +67,6 @@ const populateSongURIs = () => {
   ])
 }
 
-const getUserId = () => {
-  const user_id = window.localStorage.getItem("user_id");
-  setUserId(user_id);
-}
-
-const getAccessToken = () => {
-  const access_token = window.localStorage.getItem("token");
-  setAccessToken(access_token);
-}
-      
   useEffect(() => {
     localStorage.setItem("tags", tagName)
   },[tagName]);
@@ -84,8 +74,6 @@ const getAccessToken = () => {
   //Initialization
   useEffect(() => {
     populateTags();
-    getUserId();
-    getAccessToken();
     populateSongURIs();
   },[]);
 
