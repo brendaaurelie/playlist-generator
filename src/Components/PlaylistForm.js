@@ -18,21 +18,8 @@ import axios from "axios";
 import SongsPreview from "./SongsPreview";
 import "../App.css"
 
+
 const PlaylistForm = ({loggedIn}) => {
-    const tags = [
-        'summer',
-        'love',
-        'sad',
-        'garden',
-        'breakup',
-        'workout',
-        'lifting',
-        'crying',
-        'angry',
-        'worry',
-      ];
-  const user_id = window.localStorage.getItem("user_id");
-  const access_token = window.localStorage.getItem("token");
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -44,93 +31,102 @@ const PlaylistForm = ({loggedIn}) => {
     },
   };
 
-      const [tagName, setTagName] = useState([]);
-      const [songURIS, setSongURIS] = useState([]);
-      const [title, setTitle] = useState("");
-      const [playlistId, setPlaylistId] = useState("");
-      const [playlistGenerated, setPlaylistGenerated] = useState(false);
+  const [tagName, setTagName] = useState([]);
+  const [songURIS, setSongURIS] = useState([]);
+  const [title, setTitle] = useState("");
+  const [playlistId, setPlaylistId] = useState("");
+  const [playlistGenerated, setPlaylistGenerated] = useState(false);
+  const [tags, setTags] = useState([]);
 
-      useEffect(() => {
-        localStorage.setItem("tags", tagName)
-      },[tagName]);
+  const userId = window.localStorage.getItem("user_id");
+  const accessToken = window.localStorage.getItem("token");
 
-      //populate song uris
-      useEffect(() => {
-        setSongURIS(["spotify:track:1tDWVeCR9oWGX8d5J9rswk",
-                     "spotify:track:42et6fnHCw1HIPSrdPprMl",
-                     "spotify:track:19kHhX6f6EfLU7rcO3RqjO",
-                     "spotify:track:0eDQj41kzBhMKQIkTt6OJR",
-                     "spotify:track:7DzktdAh3zTT5Li8vam9tt",
-                     "spotify:track:2m1hi0nfMR9vdGC8UcrnwU",
-      ])
-      },[]);
+const populateTags = () => {
+  const tags = [
+    'summer',
+    'love',
+    'sad',
+    'garden',
+    'breakup',
+    'workout',
+    'lifting',
+    'crying',
+    'angry',
+    'worry',
+  ];
+  setTags(tags);
+}
 
-      const handleChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        setTagName(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
-        );
-       
-      };
+const populateSongURIs = () => {
+  setSongURIS(["spotify:track:1tDWVeCR9oWGX8d5J9rswk",
+    "spotify:track:42et6fnHCw1HIPSrdPprMl",
+    "spotify:track:19kHhX6f6EfLU7rcO3RqjO",
+    "spotify:track:0eDQj41kzBhMKQIkTt6OJR",
+    "spotify:track:7DzktdAh3zTT5Li8vam9tt",
+    "spotify:track:2m1hi0nfMR9vdGC8UcrnwU",
+  ])
+}
 
-      const [open, setOpen] = useState(false);
+  useEffect(() => {
+    localStorage.setItem("tags", tagName)
+  },[tagName]);
+
+  //Initialization
+  useEffect(() => {
+    populateTags();
+    populateSongURIs();
+  },[]);
+
+  useEffect(()=>{
+    localStorage.setItem("title",title);
+  },[title]);
+
+  const handleTagChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setTagName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
   
-      //Create a playlist with title and description
-      const handleClose = () => {
-        console.log("here");
-        setOpen(false);
-        setPlaylistGenerated(true);
-    
-        console.log("POSTING TO " + user_id);
-        axios.post(`https://api.spotify.com/v1/users/${user_id}/playlists`,{
-          name: title,
-          description: "testing from spotify api",
-          public: true
-        }, {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(res => {
-        console.log("PLAYIST ID: " + res.data.id);
-        setPlaylistId(res.data.id);
-        addSongToPlaylist(res.data.id);
-      }).catch((e) => {
-        console.log("ERR" + e);
-      })
+  const createPlaylist = () => {
+    setPlaylistGenerated(true);
+    axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
+      name: title,
+      description: "testing from spotify api",
+      public: true
+    }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  ).then(res => {
+    setPlaylistId(res.data.id);
+    addSongToPlaylist(res.data.id);
+  }).catch((e) => {
+    console.log("ERR" + e);
+  })
+  };
 
-      };
-
-      const handleOpen = () => {
-        setOpen(true);
-      };
-
-      useEffect(()=>{
-        localStorage.setItem("title",title);
-      },[title]);
-
-      //add song to playlist by their ID
-      const addSongToPlaylist = (playlistId) => {
-
-        axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
-          uris: songURIS,
-        }, {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(res => {
-        console.log("snapshot ID: " + res.data.id);
-      }).catch((e) => {
-        console.log("ERR" + e);
-      })
-
-      };
+    //add song to playlist by their ID
+    const addSongToPlaylist = (playlistId) => {
+      axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`,{
+        uris: songURIS,
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).then(res => {
+      console.log("snapshot ID: " + res.data.id);
+    }).catch((e) => {
+      console.log("ERR" + e);
+    })
+    };
   
     return (
         <Stack
@@ -171,7 +167,7 @@ const PlaylistForm = ({loggedIn}) => {
                 id="demo-multiple-chip"
                 multiple
                 value={tagName}
-                onChange={handleChange}
+                onChange={handleTagChange}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -189,7 +185,6 @@ const PlaylistForm = ({loggedIn}) => {
                   <MenuItem
                     key={tag}
                     value={tag}
-
                   >
                     {tag}
                   </MenuItem>
@@ -201,7 +196,7 @@ const PlaylistForm = ({loggedIn}) => {
           <h3>3. Done </h3>
           <Button
             disabled={!loggedIn}
-            onClick={handleOpen}
+            onClick={createPlaylist}
             endIcon={<PlaylistAddIcon />}
             sx={{
               background: "#1DB954",
@@ -214,27 +209,13 @@ const PlaylistForm = ({loggedIn}) => {
             }} variant="contained">ADD PLAYLIST</Button>
         </Stack>
         
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={open}
-          onClick={handleClose}
-        >
-          {/* <CircularProgress color="inherit" /> */}
-        </Backdrop>
       </Paper>
-      
       {/* Show the content of the playlists */}
-      
         {playlistGenerated && <SongsPreview songLists={songURIS}/>}
        
       </Stack>
       
-    );
-
-
-    
+    );   
 };
 
 export default PlaylistForm;
-
-
