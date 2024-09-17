@@ -1,22 +1,20 @@
 import axios from 'axios';
+import OpenAI from 'openai';
+//const express = require("express");
+const config = require('./config');
 
-const API_KEY = process.env.OPENAIKEY;
-console.log("HERE SHOULD BE THE KEY")
-console.log(API_KEY)
-
-const openai = axios.create({
-    baseURL: 'https://api.openai.com/v1',
-    headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${API_KEY}`,
-    },
+// import { Configuration, OpenAIApi } from "openai";
+const openai = new OpenAI({
+  apiKey: config.app.APIKey,
+  dangerouslyAllowBrowser: true
 });
 
-export const getOpenAIResponse = async (prompt) => {
-    const response = await openai.post('/completions', {
-    model: 'text-davinci-003',
-    prompt: prompt,
-    max_tokens: 100,
-    });
-    return response.data;
-};
+export async function getOpenAIResponse(prompt) {
+    const chatCompletion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'gpt-3.5-turbo',
+      });
+    console.log("IM HERE LOOK HERE")
+    console.log(chatCompletion.choices[0].message.content)
+}
+
