@@ -119,13 +119,11 @@ console.log("prompt:" , prompt);
 setPrompt(prompt);
 }
 
-//not working
 const getSongURIFromInfo = (songTitle, artist, year) => {
   let songURI = "";
   let searchQuery = "track=" + songTitle + " artist=" + artist + " year=" + year;
   console.log(searchQuery);
   console.log("ACCESStoken:", accessToken);
-  // let searchQuery="track%3DSomeone+Like+You+artist%3DAdele+year%3D2011";
   axios.get('https://api.spotify.com/v1/search', {
     params: {q: searchQuery,
       type: "track",
@@ -141,7 +139,6 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
   }).catch((e) => {
     console.log("ERR" + e);
   });
-  
   return songURI;
 }
   
