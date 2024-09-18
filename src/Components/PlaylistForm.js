@@ -99,7 +99,6 @@ const populateTags = () => {
     if (dataForSearchingTrack.length != 0) {
       dataForSearchingTrack.forEach(songTitleArtistYearLineArr => {
         getSongURIFromInfo(songTitleArtistYearLineArr[0],songTitleArtistYearLineArr[1],songTitleArtistYearLineArr[2]);
-        
       })
     }
   },[dataForSearchingTrack]);
@@ -165,27 +164,27 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
   return songURI;
 }
   
-  const createPlaylist = () => {
-    setPlaylistGenerated(true);
-    axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
-      name: title,
-      description: "testing from spotify api",
-      public: true
-    }, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  ).then(res => {
-    setPlaylistId(res.data.id);
-    getListOfSongs(prompt).then((res) => {
-      setDataForSearchingTrack(res);
-    }).catch((e)=> console.log(e));
-  }).catch((e) => {
-    console.log("ERR" + e);
-  })
-  };
+const createPlaylist = () => {
+  setPlaylistGenerated(true);
+  axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
+    name: title,
+    description: "testing from spotify api",
+    public: true
+  }, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  }
+).then(res => {
+  setPlaylistId(res.data.id);
+  getListOfSongs(prompt).then((res) => {
+    setDataForSearchingTrack(res);
+  }).catch((e)=> console.log(e));
+}).catch((e) => {
+  console.log("ERR" + e);
+})
+};
 
     //add song to playlist by their ID
     const addSongToPlaylist = (playlistId) => {
