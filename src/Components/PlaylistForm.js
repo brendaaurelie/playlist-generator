@@ -43,6 +43,8 @@ const PlaylistForm = ({loggedIn}) => {
   const [playlistGenerated, setPlaylistGenerated] = useState(false);
   const [tags, setTags] = useState([]);
   const [prompt, setPrompt] = useState("");
+  const [readyToAddToPlaylist,setReadyToAddToPlaylist] = useState(false);
+  const [dataForSearchingTrack, setDataForSearchingTrack] = useState([]);
 
 const populateTags = () => {
   const tags = [
@@ -56,18 +58,24 @@ const populateTags = () => {
     'crying',
     'angry',
     'worry',
+    'dreamy',
+    'missing',
+    'elated',
+    'hype',
+    'yearning',
+    'mindful',
+    'peaceful',
+    'chill',
+    'rowdy',
+    'chaotic',
+    'depressed',
+    'emo',
+    'disgusted',
+    'happy',
+    'winter',
+    'fall'
   ];
   setTags(tags);
-}
-
-const populateSongURIs = () => {
-  setSongURIS(["spotify:track:1tDWVeCR9oWGX8d5J9rswk",
-    "spotify:track:42et6fnHCw1HIPSrdPprMl",
-    "spotify:track:19kHhX6f6EfLU7rcO3RqjO",
-    "spotify:track:0eDQj41kzBhMKQIkTt6OJR",
-    "spotify:track:7DzktdAh3zTT5Li8vam9tt",
-    "spotify:track:2m1hi0nfMR9vdGC8UcrnwU",
-  ])
 }
 
   useEffect(() => {
@@ -77,7 +85,6 @@ const populateSongURIs = () => {
   //Initialization
   useEffect(() => {
     populateTags();
-    populateSongURIs();
   },[]);
 
   useEffect(()=>{
@@ -87,6 +94,22 @@ const populateSongURIs = () => {
   useEffect(()=>{
     createPrompt();
   },[tagName]);
+
+  useEffect(()=>{
+    if (dataForSearchingTrack.length != 0) {
+      dataForSearchingTrack.forEach(songTitleArtistYearLineArr => {
+        getSongURIFromInfo(songTitleArtistYearLineArr[0],songTitleArtistYearLineArr[1],songTitleArtistYearLineArr[2]);
+        
+      })
+    }
+  },[dataForSearchingTrack]);
+
+  useEffect(() => {
+ if(readyToAddToPlaylist){
+  addSongToPlaylist(playlistId);
+ }
+  },[readyToAddToPlaylist])
+
 
   const handleTagChange = (event) => {
     const {
@@ -121,8 +144,6 @@ const populateSongURIs = () => {
 const getSongURIFromInfo = (songTitle, artist, year) => {
   let songURI = "";
   let searchQuery = "track=" + songTitle + " artist=" + artist + " year=" + year;
-  console.log(searchQuery);
-  console.log("ACCESStoken:", accessToken);
   axios.get('https://api.spotify.com/v1/search', {
     params: {q: searchQuery,
       type: "track",
@@ -133,9 +154,12 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
       "Content-Type": "application/json",
     },
   }).then(res => {
-    songURI = res.data.tracks.items[0].uri
-    console.log("URI:",songURI);
-  }).catch((e) => {
+    songURI = res.data.tracks.items[0].uri;
+    songURIS.push(songURI);
+    if(songURIS.length==10){
+      setReadyToAddToPlaylist(true);
+    }
+  }).catch(e => {
     console.log("ERR" + e);
   });
   return songURI;
@@ -143,7 +167,6 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
   
   const createPlaylist = () => {
     setPlaylistGenerated(true);
-    //getSongURIFromInfo("Someone Like You" ,"Adele", "2011");
     axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
       name: title,
       description: "testing from spotify api",
@@ -156,8 +179,9 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
     }
   ).then(res => {
     setPlaylistId(res.data.id);
-    addSongToPlaylist(res.data.id);
-    getListOfSongs(prompt);
+    getListOfSongs(prompt).then((res) => {
+      setDataForSearchingTrack(res);
+    }).catch((e)=> console.log(e));
   }).catch((e) => {
     console.log("ERR" + e);
   })
@@ -174,7 +198,6 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
         },
       }
     ).then(res => {
-      console.log("snapshot ID: " + res.data.id);
     }).catch((e) => {
       console.log("ERR" + e);
     })
