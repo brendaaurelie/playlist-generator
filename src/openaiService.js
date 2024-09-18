@@ -21,8 +21,8 @@ export async function getOpenAIResponse(prompt) {
 
 export async function getListOfSongs(prompt) {
     let inputString = await getOpenAIResponse(prompt)
-    console.log("PARSING HERE:")
-    console.log(inputString)
+    // console.log("PARSING HERE:")
+    // console.log(inputString)
     const lines = inputString.split('\n').filter(line => line.trim() && !line.includes('PLAYLIST'));
     const result = [];
 
@@ -33,7 +33,7 @@ export async function getListOfSongs(prompt) {
         result.push([songTitle[1], artist, year]);
     });
     
-    console.log(result)
+    // console.log(result)
     return result;
 }
 
