@@ -106,6 +106,9 @@ const populateTags = () => {
   useEffect(() => {
  if(readyToAddToPlaylist){
   addSongToPlaylist(playlistId);
+  console.log("Im triggered");
+  console.log("URIS: ", songURIS);
+  setPlaylistGenerated(true);
  }
   },[readyToAddToPlaylist])
 
@@ -165,7 +168,6 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
 }
   
 const createPlaylist = () => {
-  setPlaylistGenerated(true);
   axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
     name: title,
     description: "testing from spotify api",
