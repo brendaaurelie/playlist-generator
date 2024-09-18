@@ -17,7 +17,7 @@ import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import axios from "axios";
 import SongsPreview from "./SongsPreview";
 import "../App.css"
-import { getOpenAIResponse } from "../openaiService";
+import { getListOfSongs } from "../openaiService";
 
 
 const PlaylistForm = ({loggedIn}) => {
@@ -100,23 +100,22 @@ const populateSongURIs = () => {
 
   const createPrompt = () => {
     let prompt = `Write a playlist that includes 10 songs with its respective song title, artist, and the year that best gives the mood of: ${tagName[0]}, ${tagName[1]}, and ${tagName[2]}. \n`+ 
-"Please use the format template. Do not repeat any songs. \n"+
-"---BEGIN FORMAT TEMPLATE---\n"+
-"\n"+ 
-"1. ${SONGTITLE1}; ${ARTIST1}; ${YEAR1}\n"+ 
-"2. ${SONGTITLE2}; ${ARTIST2}; ${YEAR2}\n"+  
-"3. ${SONGTITLE3}; ${ARTIST3}; ${YEAR3}\n"+ 
-"4. ${SONGTITLE4}; ${ARTIST4}; ${YEAR4}\n"+  
-"5. ${SONGTITLE5}; ${ARTIST5}; ${YEAR5}\n"+ 
-"6. ${SONGTITLE6}; ${ARTIST6}; ${YEAR6}\n"+  
-"7. ${SONGTITLE7}; ${ARTIST7}; ${YEAR7}\n"+  
-"8. ${SONGTITLE8}; ${ARTIST8}; ${YEAR8}\n"+  
-"9. ${SONGTITLE9}; ${ARTIST9}; ${YEAR9}\n"+  
-"10. ${SONGTITLE10}; ${ARTIST10}; ${YEAR10}\n"+  
-"\n"+ 
-"---END FORMAT TEMPLATE---\n";
-console.log("prompt:" , prompt);
-setPrompt(prompt);
+    "Please use the format template. Do not repeat any songs. \n"+
+    "---BEGIN FORMAT TEMPLATE---\n"+
+    "\n"+ 
+    "1. ${SONGTITLE1}; ${ARTIST1}; ${YEAR1}\n"+ 
+    "2. ${SONGTITLE2}; ${ARTIST2}; ${YEAR2}\n"+  
+    "3. ${SONGTITLE3}; ${ARTIST3}; ${YEAR3}\n"+ 
+    "4. ${SONGTITLE4}; ${ARTIST4}; ${YEAR4}\n"+  
+    "5. ${SONGTITLE5}; ${ARTIST5}; ${YEAR5}\n"+ 
+    "6. ${SONGTITLE6}; ${ARTIST6}; ${YEAR6}\n"+  
+    "7. ${SONGTITLE7}; ${ARTIST7}; ${YEAR7}\n"+  
+    "8. ${SONGTITLE8}; ${ARTIST8}; ${YEAR8}\n"+  
+    "9. ${SONGTITLE9}; ${ARTIST9}; ${YEAR9}\n"+  
+    "10. ${SONGTITLE10}; ${ARTIST10}; ${YEAR10}\n"+  
+    "\n"+ 
+    "---END FORMAT TEMPLATE---\n";
+    setPrompt(prompt);
 }
 
 //not working
@@ -147,8 +146,8 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
   
   const createPlaylist = () => {
     setPlaylistGenerated(true);
-    getSongURIFromInfo("Someone Like You" ,"Adele", "2011");
-    axios.get(`https://api.spotify.com/v1/users/${userId}/playlists`,{
+    //getSongURIFromInfo("Someone Like You" ,"Adele", "2011");
+    axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
       name: title,
       description: "testing from spotify api",
       public: true
@@ -161,8 +160,7 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
   ).then(res => {
     setPlaylistId(res.data.id);
     addSongToPlaylist(res.data.id);
-    console.log("Prompt state:",prompt);
-    // getOpenAIResponse(prompt);
+    getListOfSongs(prompt);
   }).catch((e) => {
     console.log("ERR" + e);
   })

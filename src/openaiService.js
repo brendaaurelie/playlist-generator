@@ -16,5 +16,24 @@ export async function getOpenAIResponse(prompt) {
       });
     console.log("IM HERE LOOK HERE")
     console.log(chatCompletion.choices[0].message.content)
+    return chatCompletion.choices[0].message.content;
+}
+
+export async function getListOfSongs(prompt) {
+    let inputString = await getOpenAIResponse(prompt)
+    console.log("PARSING HERE:")
+    console.log(inputString)
+    const lines = inputString.split('\n').filter(line => line.trim() && !line.includes('PLAYLIST'));
+    const result = [];
+
+    lines.forEach(line => {
+        const [indexAndTitle, artist, year] = line.split(';').map(part => part.trim());
+        const songTitle = indexAndTitle.split('. ');
+        songTitle[1].replace('\"', '');
+        result.push([songTitle[1], artist, year]);
+    });
+    
+    console.log(result)
+    return result;
 }
 
