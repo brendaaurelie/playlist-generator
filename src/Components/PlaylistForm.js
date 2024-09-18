@@ -106,8 +106,6 @@ const populateTags = () => {
   useEffect(() => {
  if(readyToAddToPlaylist){
   addSongToPlaylist(playlistId);
-  console.log("Im triggered");
-  console.log("URIS: ", songURIS);
   setPlaylistGenerated(true);
  }
   },[readyToAddToPlaylist])
