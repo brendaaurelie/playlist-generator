@@ -21,6 +21,10 @@ import { getOpenAIResponse } from "../openaiService";
 
 
 const PlaylistForm = ({loggedIn}) => {
+
+  const userId = window.localStorage.getItem("user_id");
+  const accessToken = window.localStorage.getItem("token");
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -39,10 +43,6 @@ const PlaylistForm = ({loggedIn}) => {
   const [playlistGenerated, setPlaylistGenerated] = useState(false);
   const [tags, setTags] = useState([]);
   const [prompt, setPrompt] = useState("");
-
-  const userId = window.localStorage.getItem("user_id");
-  const accessToken = window.localStorage.getItem("token");
-  
 
 const populateTags = () => {
   const tags = [
@@ -122,33 +122,33 @@ setPrompt(prompt);
 //not working
 const getSongURIFromInfo = (songTitle, artist, year) => {
   let songURI = "";
-  //let searchQuery = "track=" + songTitle + " artist=" + artist + " year=" + year;
-  let searchQuery="track%3DSomeone+Like+You+artist%3DAdele+year%3D2011";
-  axios.get(`https://api.spotify.com/v1/search`, {
-      q: searchQuery,
-      type: ["track"],
+  let searchQuery = "track=" + songTitle + " artist=" + artist + " year=" + year;
+  console.log(searchQuery);
+  console.log("ACCESStoken:", accessToken);
+  // let searchQuery="track%3DSomeone+Like+You+artist%3DAdele+year%3D2011";
+  axios.get('https://api.spotify.com/v1/search', {
+    params: {q: searchQuery,
+      type: "track",
       market: "US",
-      limit:1
-  },{
-    headers: {
+      limit:1},
+     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-  }).then(res =>{
-    console.log("URI:",res.data.tracks.items[9])
-  }
-  )
+  }).then(res => {
+    songURI = res.data.tracks.items[0].uri
+    console.log("URI:",songURI);
+  }).catch((e) => {
+    console.log("ERR" + e);
+  });
   
   return songURI;
-
-
-  
 }
   
   const createPlaylist = () => {
     setPlaylistGenerated(true);
     getSongURIFromInfo("Someone Like You" ,"Adele", "2011");
-    axios.get(`https://api.spotify.com/v1/users/${userId}/playlists`,{
+    axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
       name: title,
       description: "testing from spotify api",
       public: true
