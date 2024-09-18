@@ -43,6 +43,7 @@ const PlaylistForm = ({loggedIn}) => {
   const [playlistGenerated, setPlaylistGenerated] = useState(false);
   const [tags, setTags] = useState([]);
   const [prompt, setPrompt] = useState("");
+  const [description, setDescription] = useState("");
   const [readyToAddToPlaylist,setReadyToAddToPlaylist] = useState(false);
   const [dataForSearchingTrack, setDataForSearchingTrack] = useState([]);
 
@@ -80,6 +81,9 @@ const populateTags = () => {
 
   useEffect(() => {
     localStorage.setItem("tags", tagName)
+    if(tagName.length == 3) {
+      setDescription(`10 bangers that are giving ${tagName[0]}, ${tagName[1]}, and ${tagName[2]}`);
+    }
   },[tagName]);
 
   //Initialization
@@ -122,7 +126,7 @@ const populateTags = () => {
   };
 
   const createPrompt = () => {
-    let prompt = `Write a playlist that includes 10 songs with its respective song title, artist, and the year that best gives the mood of: ${tagName[0]}, ${tagName[1]}, and ${tagName[2]}. \n`+ 
+    let prompt = `Write a playlist that includes 10 songs with its respective song title, artist, and the year that best gives the mood of: ${tagName[0]}, ${tagName[1]}, and ${tagName[2]}. Please recommend songs as if you are a big musichead and that is not basic. \n`+ 
     "Please use the format template. Do not repeat any songs. \n"+
     "---BEGIN FORMAT TEMPLATE---\n"+
     "\n"+ 
@@ -168,7 +172,7 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
 const createPlaylist = () => {
   axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`,{
     name: title,
-    description: "testing from spotify api",
+    description: description,
     public: true
   }, {
     headers: {
