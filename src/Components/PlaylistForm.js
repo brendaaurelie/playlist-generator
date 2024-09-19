@@ -18,6 +18,7 @@ import axios from "axios";
 import SongsPreview from "./SongsPreview";
 import "../App.css"
 import { getListOfSongs } from "../openaiService";
+import { getListOfRGB } from "../openaiService";
 
 
 const PlaylistForm = ({loggedIn}) => {
@@ -43,6 +44,7 @@ const PlaylistForm = ({loggedIn}) => {
   const [playlistGenerated, setPlaylistGenerated] = useState(false);
   const [tags, setTags] = useState([]);
   const [prompt, setPrompt] = useState("");
+  const [promptRGB, setPromptRGB] = useState("");
   const [description, setDescription] = useState("");
   const [readyToAddToPlaylist,setReadyToAddToPlaylist] = useState(false);
   const [dataForSearchingTrack, setDataForSearchingTrack] = useState([]);
@@ -145,6 +147,21 @@ const populateTags = () => {
     setPrompt(prompt);
 }
 
+
+const createRGBPrompt = () => {
+  let promptRGB  = `Given a playlist called ${title} with the mood of ${tagName[0]}, ${tagName[1]}, and ${tagName[2]} with these tracks in it:${songURIS} \n` +
+"Generate me the top 5 rgb value that best represent the mood of that playlist. I want a more complex color.\n"+ 
+"Please use the format template. Do not repeat any colors.\n"+  
+"---BEGIN FORMAT TEMPLATE---\n"+ 
+"${R1}, ${G1}, ${B1}\n"+ 
+"${R2}, ${G2}, ${B2}\n"+ 
+"${R3}, ${G3}, ${B3}\n"+ 
+"${R4}, ${G4}, ${B4}\n"+ 
+"${R5}, ${G5}, ${B5}\n"+ 
+"---END FORMAT TEMPLATE---\n"
+  setPromptRGB(promptRGB);
+}
+
 const getSongURIFromInfo = (songTitle, artist, year) => {
   let songURI = "";
   let searchQuery = "track=" + songTitle + " artist=" + artist + " year=" + year;
@@ -161,6 +178,8 @@ const getSongURIFromInfo = (songTitle, artist, year) => {
     songURI = res.data.tracks.items[0].uri;
     songURIS.push(songURI);
     if(songURIS.length==10){
+      console.log("songURI: ", songURIS);
+      createRGBPrompt();
       setReadyToAddToPlaylist(true);
     }
   }).catch(e => {
@@ -201,6 +220,8 @@ const createPlaylist = () => {
         },
       }
     ).then(res => {
+      getListOfRGB(promptRGB).then((res) => {
+      }).catch((e)=> console.log(e));
     }).catch((e) => {
       console.log("ERR" + e);
     })

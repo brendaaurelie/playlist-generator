@@ -21,8 +21,6 @@ export async function getOpenAIResponse(prompt) {
 
 export async function getListOfSongs(prompt) {
     let inputString = await getOpenAIResponse(prompt)
-    // console.log("PARSING HERE:")
-    // console.log(inputString)
     const lines = inputString.split('\n').filter(line => line.trim() && !line.includes('PLAYLIST'));
     const result = [];
 
@@ -32,8 +30,22 @@ export async function getListOfSongs(prompt) {
         songTitle[1].replace('\"', '');
         result.push([songTitle[1], artist, year]);
     });
-    
-    // console.log(result)
     return result;
 }
 
+
+export async function getListOfRGB(promptRGB) {
+  let inputString = await getOpenAIResponse(promptRGB)
+  console.log("PARSING HERE:")
+  console.log(inputString)
+  const lines = inputString.split('\n').filter(line => line.trim() && !line.includes('---'));
+  const result = [];
+
+  lines.forEach(line => {
+      const [r, g, b] = line.split(',').map(part => part.trim());
+      
+      result.push([r,g,b]);
+  });
+  console.log(result)
+  return result;
+}
