@@ -31,7 +31,7 @@ const SongsPreview = ({songLists}) => {
                 const track = {}
                 track['title'] = res.data.name;
                 track['artist'] = res.data.artists[0].name;
-                console.log(JSON.stringify(track));
+                track['image'] = res.data.album.images[0].url;
                 setTrackInfo(trackInfo => [...trackInfo,track]);
               
             }).catch((e) => {
@@ -54,7 +54,7 @@ const SongsPreview = ({songLists}) => {
                 {trackInfo.map((songList) => (
                     <><ListItem alignItems="flex-start">
                         <ListItemAvatar>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                            <Avatar alt="Remy Sharp" src={songList.image} />
                         </ListItemAvatar>
                         <ListItemText
                             primary={songList.title}
